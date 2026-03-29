@@ -20,7 +20,7 @@ class AuditLogger:
 
     def _ensure_collection(self) -> None:
         if not self._db.has_collection(self.COLLECTION):
-            col = self._db.create_collection(self.COLLECTION)
+            col = self._db.create_collection(self.COLLECTION, system=True)
             col.add_index({"type": "persistent", "fields": ["timestamp"]})
             col.add_index({"type": "persistent", "fields": ["op"]})
             col.add_index({"type": "persistent", "fields": ["agent_id"]})
@@ -86,7 +86,11 @@ class AuditLogger:
         )
         return list(self._db.aql.execute(query, bind_vars=bind_vars))
 
+    def get_logs(self, limit: int = 100) -> list[dict[str, Any]]:
+        """Convenience alias for query()."""
+        return self.query(limit=limit)
+
     def reset(self) -> None:
         if self._db.has_collection(self.COLLECTION):
-            self._db.delete_collection(self.COLLECTION)
+            self._db.delete_collection(self.COLLECTION, system=True)
         self._ensure_collection()

@@ -30,7 +30,7 @@ class CDCEngine:
 
     def _ensure_collections(self) -> None:
         if not self._db.has_collection(self.CHANGELOG):
-            col = self._db.create_collection(self.CHANGELOG)
+            col = self._db.create_collection(self.CHANGELOG, system=True)
             col.add_index({"type": "persistent", "fields": ["timestamp"]})
             col.add_index({"type": "persistent", "fields": ["memory_id"]})
             col.add_index({
@@ -40,7 +40,7 @@ class CDCEngine:
             })
 
         if not self._db.has_collection(self.CHECKPOINTS):
-            self._db.create_collection(self.CHECKPOINTS)
+            self._db.create_collection(self.CHECKPOINTS, system=True)
 
     def _now(self) -> str:
         return datetime.now(timezone.utc).isoformat()
@@ -142,7 +142,7 @@ class CDCEngine:
     def reset(self) -> None:
         for col_name in [self.CHANGELOG, self.CHECKPOINTS]:
             if self._db.has_collection(col_name):
-                self._db.delete_collection(col_name)
+                self._db.delete_collection(col_name, system=True)
         self._ensure_collections()
 
     def stop(self) -> None:
