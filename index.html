@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Open ArgonDB - Enterprise Features for ArangoDB Community</title>
+<title>OpenArangoDB - Enterprise Features for ArangoDB Community</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬡</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -686,7 +686,7 @@ footer {
 <!-- ── Nav ── -->
 <nav class="site-nav" id="site-nav">
   <div class="nav-inner">
-    <a href="#" class="nav-brand">Open ArgonDB</a>
+    <a href="#" class="nav-brand">OpenArangoDB</a>
     <div class="nav-links">
       <a href="#comparison">Compare</a>
       <a href="#features">Features</a>
@@ -702,15 +702,15 @@ footer {
   <div class="container">
     <div class="hero-badge">v0.1.0 &middot; Apache 2.0</div>
     <h1>Enterprise features<br>for ArangoDB Community.<br><em>No license required.</em></h1>
-    <p class="hero-sub">Open ArgonDB is a Python service layer that adds CDC, audit logging, vector search, graph traversals, and 12 more Enterprise-grade features to ArangoDB Community Edition.</p>
+    <p class="hero-sub">OpenArangoDB is a Python service layer that adds CDC, audit logging, vector search, graph traversals, and 12 more Enterprise-grade features to ArangoDB Community Edition.</p>
     <div class="hero-actions">
       <a href="#quickstart" class="btn-primary">Get Started</a>
-      <a href="https://github.com/bolnet/open-argondb" class="btn-secondary">View on GitHub</a>
+      <a href="https://github.com/bolnet/OpenArangoDB" class="btn-secondary">View on GitHub</a>
     </div>
     <div class="install-bar">
-      <div class="install-cmd" onclick="navigator.clipboard.writeText('pip install open-argondb');this.querySelector('.copy').textContent='Copied!'">
+      <div class="install-cmd" onclick="navigator.clipboard.writeText('pip install OpenArangoDB');this.querySelector('.copy').textContent='Copied!'">
         <span class="prompt">$</span>
-        <span class="cmd">pip install open-argondb</span>
+        <span class="cmd">pip install OpenArangoDB</span>
         <span class="copy">click to copy</span>
       </div>
     </div>
@@ -722,7 +722,7 @@ footer {
   <div class="container">
     <div class="section-header">
       <div class="section-label">Comparison</div>
-      <h2 class="section-title">Community vs Enterprise<br>vs <em>Open ArgonDB</em></h2>
+      <h2 class="section-title">Community vs Enterprise<br>vs <em>OpenArangoDB</em></h2>
     </div>
     <div class="table-wrap">
       <table>
@@ -731,7 +731,7 @@ footer {
             <th>Feature</th>
             <th>Community</th>
             <th>Enterprise</th>
-            <th>Open ArgonDB</th>
+            <th>OpenArangoDB</th>
           </tr>
         </thead>
         <tbody>
@@ -911,11 +911,11 @@ footer {
         <span style="margin-left: 0.5rem;">main.py</span>
       </div>
       <div class="code-body">
-<pre><span class="kw">from</span> open_argondb <span class="kw">import</span> ArgonDB
-<span class="kw">from</span> open_argondb.models <span class="kw">import</span> Memory, AgentScope
+<pre><span class="kw">from</span> open_arangodb <span class="kw">import</span> ArangoDB
+<span class="kw">from</span> open_arangodb.models <span class="kw">import</span> Memory, AgentScope
 
 <span class="cm"># Connect — audit and CDC enabled by default</span>
-db = <span class="fn">ArgonDB</span>(host=<span class="str">"http://localhost:8529"</span>, database=<span class="str">"myapp"</span>)
+db = <span class="fn">ArangoDB</span>(host=<span class="str">"http://localhost:8529"</span>, database=<span class="str">"myapp"</span>)
 
 <span class="cm"># Insert with agent scoping</span>
 scope = <span class="fn">AgentScope</span>(agent_id=<span class="str">"agent-1"</span>, workflow_id=<span class="str">"wf-123"</span>)
@@ -949,7 +949,7 @@ db.<span class="fn">supersede</span>(<span class="str">"m1"</span>, new, scope=s
     </p>
     <div class="bench-grid">
       <div class="bench-card">
-        <div class="bench-name">Open ArgonDB</div>
+        <div class="bench-name">OpenArangoDB</div>
         <div class="bench-score">95.0%</div>
         <div class="bench-label">accuracy</div>
       </div>
@@ -983,7 +983,7 @@ db.<span class="fn">supersede</span>(<span class="str">"m1"</span>, new, scope=s
       <div class="arch-label">Your Application</div>
       <div><span class="arch-layer">Python</span> <span class="arch-layer">Agents</span> <span class="arch-layer">APIs</span></div>
       <div class="arch-connector">&darr;</div>
-      <div class="arch-label">ArgonDB Gateway &mdash; all writes go through here</div>
+      <div class="arch-label">ArangoDB Gateway &mdash; all writes go through here</div>
       <div>
         <span class="arch-layer">Audit</span>
         <span class="arch-layer">CDC</span>
@@ -1003,11 +1003,11 @@ db.<span class="fn">supersede</span>(<span class="str">"m1"</span>, new, scope=s
 <footer>
   <div class="container">
     <div class="footer-inner">
-      <div class="footer-left">Open ArgonDB &middot; Apache 2.0 &middot; Python 3.10+ &middot; ArangoDB 3.12+</div>
+      <div class="footer-left">OpenArangoDB &middot; Apache 2.0 &middot; Python 3.10+ &middot; ArangoDB 3.12+</div>
       <div class="footer-links">
-        <a href="https://github.com/bolnet/open-argondb">GitHub</a>
-        <a href="https://github.com/bolnet/open-argondb/issues">Issues</a>
-        <a href="https://pypi.org/project/open-argondb/">PyPI</a>
+        <a href="https://github.com/bolnet/OpenArangoDB">GitHub</a>
+        <a href="https://github.com/bolnet/OpenArangoDB/issues">Issues</a>
+        <a href="https://pypi.org/project/OpenArangoDB/">PyPI</a>
       </div>
     </div>
   </div>

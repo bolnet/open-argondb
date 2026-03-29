@@ -1,4 +1,4 @@
-"""Side-by-side test: ArgonDB vs Memwright — same operations, both stores."""
+"""Side-by-side test: ArangoDB vs Memwright — same operations, both stores."""
 
 import pytest
 import tempfile
@@ -9,8 +9,8 @@ MW_SITE = "/Users/aarjay/.local/share/uv/tools/memwright/lib/python3.12/site-pac
 if MW_SITE not in sys.path:
     sys.path.insert(0, MW_SITE)
 
-from open_argondb import ArgonDB
-from open_argondb.models import Memory as AMemory, AgentScope, Visibility
+from open_arangodb import ArangoDB
+from open_arangodb.models import Memory as AMemory, AgentScope, Visibility
 
 from agent_memory.core import AgentMemory
 
@@ -20,8 +20,8 @@ from agent_memory.core import AgentMemory
 
 @pytest.fixture
 def argon():
-    """Fresh ArgonDB instance on test database."""
-    db = ArgonDB(
+    """Fresh ArangoDB instance on test database."""
+    db = ArangoDB(
         host="http://localhost:8529",
         database="test_vs_memwright",
         username="root",
@@ -121,7 +121,7 @@ class TestDelete:
         argon.insert(mem)
         argon.delete("del-1")
 
-        # ArgonDB soft-delete sets _deleted=true; get() filters those out
+        # ArangoDB soft-delete sets _deleted=true; get() filters those out
         # so a successful soft-delete means get() returns None
         fetched = argon.get("del-1")
         assert fetched is None
@@ -160,7 +160,7 @@ class TestListByEntity:
 
 
 class TestAuditTrail:
-    """ArgonDB has built-in audit; memwright does not."""
+    """ArangoDB has built-in audit; memwright does not."""
 
     def test_argon_audit_logged(self, argon):
         scope = AgentScope(agent_id="test-agent", session_id="s1", visibility=Visibility.GLOBAL)
@@ -173,7 +173,7 @@ class TestAuditTrail:
 
 
 class TestCDC:
-    """ArgonDB CDC captures change events."""
+    """ArangoDB CDC captures change events."""
 
     def test_argon_cdc_captures_changes(self, argon):
         mem = AMemory(id="cdc-1", content="tracked change", tags=["test"], entity="test")

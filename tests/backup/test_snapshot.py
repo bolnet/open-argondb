@@ -6,8 +6,8 @@ from unittest.mock import patch
 
 import pytest
 
-from open_argondb.backup.snapshot import SnapshotHelper
-from open_argondb.models import SnapshotConfig
+from open_arangodb.backup.snapshot import SnapshotHelper
+from open_arangodb.models import SnapshotConfig
 
 
 @pytest.fixture()

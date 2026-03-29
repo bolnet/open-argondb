@@ -7,8 +7,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from open_argondb.models import Memory, RetrievalRequest, TemporalQuery
-from open_argondb.retrieval.layers.temporal import TemporalLayer
+from open_arangodb.models import Memory, RetrievalRequest, TemporalQuery
+from open_arangodb.retrieval.layers.temporal import TemporalLayer
 
 
 class TestTemporalLayer:

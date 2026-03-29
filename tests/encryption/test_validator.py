@@ -6,8 +6,8 @@ from unittest.mock import patch
 
 import pytest
 
-from open_argondb.encryption.validator import EncryptionValidator
-from open_argondb.models import EncryptionRequirement, EncryptionStatus
+from open_arangodb.encryption.validator import EncryptionValidator
+from open_arangodb.models import EncryptionRequirement, EncryptionStatus
 
 
 @pytest.fixture()
@@ -19,7 +19,7 @@ class TestCheckMacos:
     def test_filevault_on(self, validator: EncryptionValidator) -> None:
         """Detects FileVault when fdesetup reports On."""
         with (
-            patch("open_argondb.encryption.validator.platform") as mock_platform,
+            patch("open_arangodb.encryption.validator.platform") as mock_platform,
             patch.object(
                 validator,
                 "_run_command",
@@ -35,7 +35,7 @@ class TestCheckMacos:
     def test_filevault_off(self, validator: EncryptionValidator) -> None:
         """Detects no encryption when FileVault is Off."""
         with (
-            patch("open_argondb.encryption.validator.platform") as mock_platform,
+            patch("open_arangodb.encryption.validator.platform") as mock_platform,
             patch.object(
                 validator,
                 "_run_command",
@@ -55,7 +55,7 @@ class TestCheckLinux:
         lsblk_output = '{"blockdevices": [{"name":"sda1","fstype":"crypto_LUKS","mountpoint":null}]}'
 
         with (
-            patch("open_argondb.encryption.validator.platform") as mock_platform,
+            patch("open_arangodb.encryption.validator.platform") as mock_platform,
             patch.object(
                 validator,
                 "_run_command",
@@ -73,7 +73,7 @@ class TestCheckLinux:
         lsblk_output = '{"blockdevices": [{"name":"sda1","fstype":"ext4","mountpoint":"/"}]}'
 
         with (
-            patch("open_argondb.encryption.validator.platform") as mock_platform,
+            patch("open_arangodb.encryption.validator.platform") as mock_platform,
             patch.object(
                 validator,
                 "_run_command",

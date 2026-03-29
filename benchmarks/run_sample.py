@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sample benchmark: open-argondb vs memwright.
+"""Sample benchmark: OpenArangoDB vs memwright.
 
 Measures latency, throughput, and retrieval quality side-by-side.
 Usage: uv run python benchmarks/run_sample.py
@@ -21,8 +21,8 @@ MW_SITE = "/Users/aarjay/.local/share/uv/tools/memwright/lib/python3.12/site-pac
 if MW_SITE not in sys.path:
     sys.path.insert(0, MW_SITE)
 
-from open_argondb import ArgonDB
-from open_argondb.models import AgentScope, Memory as AMemory, Visibility
+from open_arangodb import ArangoDB
+from open_arangodb.models import AgentScope, Memory as AMemory, Visibility
 
 from agent_memory.core import AgentMemory
 
@@ -115,23 +115,23 @@ def _calc_stats(times_ns: list[int]) -> LatencyStats:
     )
 
 
-# ── ArgonDB benchmark ──
+# ── ArangoDB benchmark ──
 
 def bench_argondb(corpus_size: int) -> BenchResult:
     print(f"\n{'='*60}")
-    print(f"  ArgonDB Benchmark (corpus={corpus_size})")
+    print(f"  ArangoDB Benchmark (corpus={corpus_size})")
     print(f"{'='*60}")
 
-    db = ArgonDB(
+    db = ArangoDB(
         host="http://localhost:8529",
-        database="bench_open_argondb",
+        database="bench_open_arangodb",
         username="root",
         password="",
         audit_enabled=True,
         cdc_enabled=True,
     )
     db.reset()
-    result = BenchResult(backend="open-argondb", corpus_size=corpus_size)
+    result = BenchResult(backend="OpenArangoDB", corpus_size=corpus_size)
 
     # ── Ingest ──
     print("  Ingesting...", end="", flush=True)
@@ -285,12 +285,12 @@ def print_comparison(a: BenchResult, m: BenchResult) -> None:
         ("Delete p99", f"{a.delete_latency.p99_ms}ms", f"{m.delete_latency.p99_ms}ms"),
     ]
 
-    print(f"  {'Metric':<20} {'ArgonDB':>12} {'Memwright':>12}")
+    print(f"  {'Metric':<20} {'ArangoDB':>12} {'Memwright':>12}")
     print(f"  {'-'*20} {'-'*12} {'-'*12}")
     for label, av, mv in rows:
         print(f"  {label:<20} {av:>12} {mv:>12}")
 
-    print(f"\n  Note: ArgonDB includes audit + CDC overhead per write.")
+    print(f"\n  Note: ArangoDB includes audit + CDC overhead per write.")
     print(f"  Memwright uses SQLite (local file) — no audit/CDC.")
 
 

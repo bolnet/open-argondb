@@ -8,8 +8,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from open_argondb.auth.ldap_auth import LDAPAuthenticator
-from open_argondb.models import AuthResult, LDAPConfig, RoleMapping
+from open_arangodb.auth.ldap_auth import LDAPAuthenticator
+from open_arangodb.models import AuthResult, LDAPConfig, RoleMapping
 
 
 @pytest.fixture

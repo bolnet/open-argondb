@@ -1,4 +1,4 @@
-"""Integration tests — exercises the full ArgonDB gateway with all modules enabled."""
+"""Integration tests — exercises the full ArangoDB gateway with all modules enabled."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import numpy as np
 import pytest
 
 from conftest import MockDatabase
-from open_argondb.models import (
+from open_arangodb.models import (
     AgentScope,
     EdgeDefinition,
     GraphConfig,
@@ -85,16 +85,16 @@ def mock_db() -> MockDatabase:
 
 @pytest.fixture
 def argon_full(mock_db: MockDatabase):
-    """ArgonDB with all optional modules enabled."""
+    """ArangoDB with all optional modules enabled."""
     _install_fake_sentence_transformers()
-    with patch("open_argondb.core.ArangoClient") as mock_client_cls:
+    with patch("open_arangodb.core.ArangoClient") as mock_client_cls:
         mock_client = MagicMock()
         mock_client_cls.return_value = mock_client
         mock_client.db.return_value = mock_db
 
-        from open_argondb.core import ArgonDB
+        from open_arangodb.core import ArangoDB
 
-        db = ArgonDB(
+        db = ArangoDB(
             host="http://localhost:8529",
             database="test",
             audit_enabled=True,
@@ -110,16 +110,16 @@ def argon_full(mock_db: MockDatabase):
 
 @pytest.fixture
 def argon_minimal(mock_db: MockDatabase):
-    """ArgonDB with no optional modules (backward-compat check)."""
+    """ArangoDB with no optional modules (backward-compat check)."""
     _install_fake_sentence_transformers()
-    with patch("open_argondb.core.ArangoClient") as mock_client_cls:
+    with patch("open_arangodb.core.ArangoClient") as mock_client_cls:
         mock_client = MagicMock()
         mock_client_cls.return_value = mock_client
         mock_client.db.return_value = mock_db
 
-        from open_argondb.core import ArgonDB
+        from open_arangodb.core import ArangoDB
 
-        db = ArgonDB(
+        db = ArangoDB(
             host="http://localhost:8529",
             database="test",
         )
@@ -128,7 +128,7 @@ def argon_minimal(mock_db: MockDatabase):
 
 @pytest.fixture
 def argon_with_satellite(mock_db: MockDatabase):
-    """ArgonDB with satellite cache configured."""
+    """ArangoDB with satellite cache configured."""
     _install_fake_sentence_transformers()
 
     # Pre-populate a collection for satellite cache to sync from
@@ -136,14 +136,14 @@ def argon_with_satellite(mock_db: MockDatabase):
     col.insert({"_key": "item-1", "name": "Widget"})
     col.insert({"_key": "item-2", "name": "Gadget"})
 
-    with patch("open_argondb.core.ArangoClient") as mock_client_cls:
+    with patch("open_arangodb.core.ArangoClient") as mock_client_cls:
         mock_client = MagicMock()
         mock_client_cls.return_value = mock_client
         mock_client.db.return_value = mock_db
 
-        from open_argondb.core import ArgonDB
+        from open_arangodb.core import ArangoDB
 
-        db = ArgonDB(
+        db = ArangoDB(
             host="http://localhost:8529",
             database="test",
             satellite_configs=[
@@ -341,7 +341,7 @@ class TestFeatureFlags:
             argon_minimal.traverse_parallel(["v/1"])
 
     def test_backup_disabled(self, argon_minimal: Any) -> None:
-        from open_argondb.models import BackupConfig
+        from open_arangodb.models import BackupConfig
 
         with pytest.raises(RuntimeError, match="Backup is not enabled"):
             argon_minimal.create_backup(BackupConfig(output_dir="/tmp"))

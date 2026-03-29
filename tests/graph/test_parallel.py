@@ -6,9 +6,9 @@ from unittest.mock import patch
 
 import pytest
 
-from open_argondb.graph.manager import GraphManager
-from open_argondb.graph.parallel import ParallelTraverser
-from open_argondb.models import EdgeDefinition, GraphConfig, TraversalResult
+from open_arangodb.graph.manager import GraphManager
+from open_arangodb.graph.parallel import ParallelTraverser
+from open_arangodb.models import EdgeDefinition, GraphConfig, TraversalResult
 
 
 @pytest.fixture

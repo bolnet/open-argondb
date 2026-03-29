@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from open_argondb.audit.logger import AuditLogger
-from open_argondb.models import AgentScope, Visibility
+from open_arangodb.audit.logger import AuditLogger
+from open_arangodb.models import AgentScope, Visibility
 
 
 # ── log() ────────────────────────────────────────────────────────────

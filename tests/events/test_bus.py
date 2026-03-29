@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from open_argondb.events.bus import InProcessBus
+from open_arangodb.events.bus import InProcessBus
 
 
 # ── Publish / Subscribe ──────────────────────────────────────────────

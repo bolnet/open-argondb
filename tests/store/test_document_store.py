@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-from open_argondb.models import AgentScope, Memory, Visibility
-from open_argondb.store.document_store import DocumentStore
+from open_arangodb.models import AgentScope, Memory, Visibility
+from open_arangodb.store.document_store import DocumentStore
 
 
 # ── Helpers ──────────────────────────────────────────────────────────

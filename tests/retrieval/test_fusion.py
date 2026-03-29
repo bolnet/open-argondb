@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from open_argondb.models import Memory, RetrievalResult
-from open_argondb.retrieval.fusion import RRFFusion
+from open_arangodb.models import Memory, RetrievalResult
+from open_arangodb.retrieval.fusion import RRFFusion
 
 
 def _make_result(mid: str, score: float, source: str = "test") -> RetrievalResult:

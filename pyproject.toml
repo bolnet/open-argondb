@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "open-argondb"
+name = "OpenArangoDB"
 version = "0.1.0"
 description = "Enterprise-equivalent features for ArangoDB Community Edition — CDC, audit, encryption, agent memory, and more."
 readme = "README.md"
@@ -47,12 +47,12 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/aarjay/open-argondb"
-Repository = "https://github.com/aarjay/open-argondb"
-Issues = "https://github.com/aarjay/open-argondb/issues"
+Homepage = "https://github.com/aarjay/OpenArangoDB"
+Repository = "https://github.com/aarjay/OpenArangoDB"
+Issues = "https://github.com/aarjay/OpenArangoDB/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/open_argondb"]
+packages = ["src/open_arangodb"]
 
 [tool.ruff]
 line-length = 100

@@ -1,8 +1,8 @@
-# Open ArgonDB
+# OpenArangoDB
 
 Enterprise-grade features for ArangoDB Community Edition -- no license upgrade required.
 
-Open ArgonDB is a Python service layer that sits on top of ArangoDB Community and adds the features you'd normally need Enterprise for: change data capture, audit logging, vector search, graph traversals, encryption validation, hot backups, and more.
+OpenArangoDB is a Python service layer that sits on top of ArangoDB Community and adds the features you'd normally need Enterprise for: change data capture, audit logging, vector search, graph traversals, encryption validation, hot backups, and more.
 
 ## Why
 
@@ -16,11 +16,11 @@ ArangoDB Community is a powerful multi-model database, but critical production f
 - No satellite collections
 - No DC-to-DC replication
 
-Open ArgonDB implements these at the application layer. You get the same capabilities without changing your database engine or paying for Enterprise.
+OpenArangoDB implements these at the application layer. You get the same capabilities without changing your database engine or paying for Enterprise.
 
-## Community vs Enterprise vs Open ArgonDB
+## Community vs Enterprise vs OpenArangoDB
 
-| Feature | Community | Enterprise | Open ArgonDB |
+| Feature | Community | Enterprise | OpenArangoDB |
 |---|:---:|:---:|:---:|
 | **Document Store** | Yes | Yes | Yes |
 | **Graph Queries (AQL)** | Yes | Yes | Yes |
@@ -44,22 +44,22 @@ Open ArgonDB implements these at the application layer. You get the same capabil
 ## Install
 
 ```bash
-pip install open-argondb
+pip install OpenArangoDB
 
 # With vector search (BAAI/bge-m3 embeddings)
-pip install open-argondb[embeddings]
+pip install OpenArangoDB[embeddings]
 
 # With Redis event bus
-pip install open-argondb[events-redis]
+pip install OpenArangoDB[events-redis]
 
 # With NATS event bus
-pip install open-argondb[events-nats]
+pip install OpenArangoDB[events-nats]
 
 # With LDAP auth
-pip install open-argondb[auth]
+pip install OpenArangoDB[auth]
 
 # Everything
-pip install open-argondb[all]
+pip install OpenArangoDB[all]
 ```
 
 Requires Python 3.10+ and ArangoDB 3.12+ (Community Edition).
@@ -69,9 +69,9 @@ Requires Python 3.10+ and ArangoDB 3.12+ (Community Edition).
 ### Connect
 
 ```python
-from open_argondb import ArgonDB
+from open_arangodb import ArangoDB
 
-db = ArgonDB(
+db = ArangoDB(
     host="http://localhost:8529",
     database="myapp",
     username="root",
@@ -82,7 +82,7 @@ db = ArgonDB(
 All features (audit, CDC, vector search) are enabled by default. Disable what you don't need:
 
 ```python
-db = ArgonDB(
+db = ArangoDB(
     host="http://localhost:8529",
     database="myapp",
     audit_enabled=False,      # skip audit logging
@@ -94,7 +94,7 @@ db = ArgonDB(
 ### Store and Retrieve
 
 ```python
-from open_argondb.models import Memory
+from open_arangodb.models import Memory
 
 # Insert
 mem = Memory(id="m1", content="User prefers dark mode", tags=["preference", "ui"])
@@ -126,7 +126,7 @@ for r in results:
     print(r["memory_id"], r["content"], r["distance"])
 ```
 
-Open ArgonDB uses numpy cosine similarity by default and auto-upgrades to ArangoDB's native vector index when available.
+OpenArangoDB uses numpy cosine similarity by default and auto-upgrades to ArangoDB's native vector index when available.
 
 ### Change Data Capture
 
@@ -165,7 +165,7 @@ Audit entries auto-expire after 90 days (configurable via `retention_days`).
 Control which agents and workflows can see which records.
 
 ```python
-from open_argondb.models import AgentScope, Visibility
+from open_arangodb.models import AgentScope, Visibility
 
 # Private to one agent
 private = AgentScope(agent_id="agent-1", visibility=Visibility.PRIVATE)
@@ -189,7 +189,7 @@ results = db.list_memories(scope=private)
 Track how information evolves over time.
 
 ```python
-db = ArgonDB(host="http://localhost:8529", database="myapp", temporal_enabled=True)
+db = ArangoDB(host="http://localhost:8529", database="myapp", temporal_enabled=True)
 
 # Supersede outdated information
 old = Memory(id="fact-1", content="CEO is Alice", tags=["org"])
@@ -211,9 +211,9 @@ contradictions = db.detect_contradictions("org")
 ### Graph Traversals
 
 ```python
-from open_argondb.models import GraphConfig, EdgeDefinition
+from open_arangodb.models import GraphConfig, EdgeDefinition
 
-db = ArgonDB(host="http://localhost:8529", database="myapp", graph_enabled=True)
+db = ArangoDB(host="http://localhost:8529", database="myapp", graph_enabled=True)
 
 # Create a graph
 config = GraphConfig(
@@ -240,13 +240,13 @@ results = db.traverse_parallel(
 React to changes in real time.
 
 ```python
-from open_argondb.events.bus import InProcessBus, RedisBus
+from open_arangodb.events.bus import InProcessBus, RedisBus
 
 # In-process (default)
-db = ArgonDB(host="http://localhost:8529", database="myapp")
+db = ArangoDB(host="http://localhost:8529", database="myapp")
 
 # Redis-backed for multi-process
-db = ArgonDB(
+db = ArangoDB(
     host="http://localhost:8529",
     database="myapp",
     event_bus=RedisBus(redis_url="redis://localhost:6379"),
@@ -261,9 +261,9 @@ db.events.subscribe("memory.deleted", lambda data: print(f"Deleted: {data['memor
 ### Backup and Restore
 
 ```python
-from open_argondb.models import BackupConfig
+from open_arangodb.models import BackupConfig
 
-db = ArgonDB(host="http://localhost:8529", database="myapp", backup_enabled=True)
+db = ArangoDB(host="http://localhost:8529", database="myapp", backup_enabled=True)
 
 config = BackupConfig(output_dir="/backups/myapp", database="myapp")
 result = db.create_backup(config)
@@ -277,7 +277,7 @@ Your Application / Agents
          |
          v
 +----------------------------+
-|     ArgonDB Gateway        |  <-- All writes go through here
+|     ArangoDB Gateway        |  <-- All writes go through here
 +----------------------------+
 | Audit  | CDC    | Events   |  <-- Automatic on every write
 | Scope  | Vector | Temporal |  <-- Query-time features
@@ -336,7 +336,7 @@ class Memory:
 
 LoCoMo benchmark (2 conversations, 40 questions, GPT-4.1-mini judge):
 
-| Metric | Open ArgonDB | Mem0 | Letta/MemGPT | Zep/Graphiti |
+| Metric | OpenArangoDB | Mem0 | Letta/MemGPT | Zep/Graphiti |
 |---|---|---|---|---|
 | **Accuracy** | **95.0%** | 66.9% | 74.0% | 58.4% |
 | **F1 Score** | **72.3%** | 16.8% | -- | -- |

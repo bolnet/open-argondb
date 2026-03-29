@@ -6,8 +6,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from open_argondb.models import RetrievalRequest
-from open_argondb.retrieval.layers.semantic import SemanticLayer
+from open_arangodb.models import RetrievalRequest
+from open_arangodb.retrieval.layers.semantic import SemanticLayer
 
 
 class TestSemanticLayer:

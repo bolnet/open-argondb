@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from open_argondb.cdc.engine import CDCEngine
-from open_argondb.models import ChangeOp, Memory
+from open_arangodb.cdc.engine import CDCEngine
+from open_arangodb.models import ChangeOp, Memory
 
 
 # ── Helpers ──────────────────────────────────────────────────────────

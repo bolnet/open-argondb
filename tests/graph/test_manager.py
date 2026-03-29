@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from open_argondb.graph.manager import GraphManager
-from open_argondb.models import EdgeDefinition, GraphConfig, PartitionKey
+from open_arangodb.graph.manager import GraphManager
+from open_arangodb.models import EdgeDefinition, GraphConfig, PartitionKey
 
 
 @pytest.fixture

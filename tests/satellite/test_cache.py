@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from open_argondb.models import SatelliteConfig, SatelliteStats
-from open_argondb.satellite.cache import SatelliteCache
+from open_arangodb.models import SatelliteConfig, SatelliteStats
+from open_arangodb.satellite.cache import SatelliteCache
 
 
 @pytest.fixture

@@ -7,12 +7,12 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from open_argondb.models import (
+from open_arangodb.models import (
     Memory,
     RetrievalConfig,
     RetrievalRequest,
 )
-from open_argondb.retrieval.orchestrator import RetrievalOrchestrator
+from open_arangodb.retrieval.orchestrator import RetrievalOrchestrator
 
 
 class TestRetrievalOrchestrator:

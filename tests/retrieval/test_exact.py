@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-from open_argondb.models import RetrievalRequest
-from open_argondb.retrieval.layers.exact import ExactMatchLayer
+from open_arangodb.models import RetrievalRequest
+from open_arangodb.retrieval.layers.exact import ExactMatchLayer
 
 
 class TestExactMatchLayer:

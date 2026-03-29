@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from open_argondb.cdc.engine import CDCEngine
-from open_argondb.events.bus import InProcessBus
-from open_argondb.models import Memory, ReplicationConfig, ReplicationStatus
-from open_argondb.replication.engine import ReplicationEngine
+from open_arangodb.cdc.engine import CDCEngine
+from open_arangodb.events.bus import InProcessBus
+from open_arangodb.models import Memory, ReplicationConfig, ReplicationStatus
+from open_arangodb.replication.engine import ReplicationEngine
 
 try:
     from tests.conftest import MockDatabase

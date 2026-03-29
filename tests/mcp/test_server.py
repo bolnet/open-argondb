@@ -1,4 +1,4 @@
-"""Unit tests for ArgonDB MCP server."""
+"""Unit tests for ArangoDB MCP server."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from open_argondb.mcp.server import ArgonDBMCPServer
-from open_argondb.models import (
+from open_arangodb.mcp.server import ArangoDBMCPServer
+from open_arangodb.models import (
     ChangeEvent,
     ChangeOp,
     EncryptionStatus,
@@ -40,21 +40,21 @@ def _make_memory(
 
 @pytest.fixture
 def mock_db() -> MagicMock:
-    """Create a MagicMock that mimics ArgonDB gateway methods."""
+    """Create a MagicMock that mimics ArangoDB gateway methods."""
     db = MagicMock()
     db._audit = MagicMock()
     return db
 
 
 @pytest.fixture
-def server(mock_db: MagicMock) -> ArgonDBMCPServer:
-    return ArgonDBMCPServer(mock_db)
+def server(mock_db: MagicMock) -> ArangoDBMCPServer:
+    return ArangoDBMCPServer(mock_db)
 
 
 # ── Tool Definitions ─────────────────────────────────────────────────
 
 
-def test_get_tools(server: ArgonDBMCPServer) -> None:
+def test_get_tools(server: ArangoDBMCPServer) -> None:
     """get_tools returns a list of tool definitions with name keys."""
     tools = server.get_tools()
     assert isinstance(tools, list)
@@ -85,7 +85,7 @@ def test_get_tools(server: ArgonDBMCPServer) -> None:
 
 
 def test_memory_insert(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_insert creates a memory via the gateway."""
     returned = _make_memory(mid="new-1")
@@ -110,7 +110,7 @@ def test_memory_insert(
 
 
 def test_memory_insert_with_agent_scope(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_insert passes agent scope when agent_id is provided."""
     returned = _make_memory(mid="scoped-1")
@@ -129,7 +129,7 @@ def test_memory_insert_with_agent_scope(
 
 
 def test_memory_get(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_get retrieves a memory by ID."""
     mem = _make_memory(mid="mem-1", content="found it", entity="alice")
@@ -146,7 +146,7 @@ def test_memory_get(
 
 
 def test_memory_get_not_found(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_get returns error when memory does not exist."""
     mock_db.get.return_value = None
@@ -158,7 +158,7 @@ def test_memory_get_not_found(
 
 
 def test_memory_search(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_search delegates to db.search with limit."""
     mock_db.search.return_value = [
@@ -176,7 +176,7 @@ def test_memory_search(
 
 
 def test_memory_update(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_update fetches then updates the memory."""
     old = _make_memory(mid="mem-1", content="old content", tags=["old"])
@@ -201,7 +201,7 @@ def test_memory_update(
 
 
 def test_memory_update_not_found(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_update returns error when memory does not exist."""
     mock_db.get.return_value = None
@@ -215,7 +215,7 @@ def test_memory_update_not_found(
 
 
 def test_memory_delete(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_delete soft-deletes via the gateway."""
     result = server.call_tool("memory_delete", {"memory_id": "mem-1"})
@@ -226,7 +226,7 @@ def test_memory_delete(
 
 
 def test_memory_supersede(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """memory_supersede replaces old memory with new one."""
     new_mem = _make_memory(mid="new-2", content="replacement")
@@ -253,7 +253,7 @@ def test_memory_supersede(
 
 
 def test_retrieval_search_with_orchestrator(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """retrieval_search uses retrieve() when available."""
     mock_db.retrieve.return_value = [
@@ -276,7 +276,7 @@ def test_retrieval_search_with_orchestrator(
 
 
 def test_retrieval_search_fallback(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """retrieval_search falls back to basic search when retrieve() missing."""
     # Remove the retrieve attribute so hasattr returns False
@@ -295,7 +295,7 @@ def test_retrieval_search_fallback(
 
 
 def test_audit_query(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """audit_query delegates to _audit.query."""
     mock_db._audit.query.return_value = [
@@ -314,7 +314,7 @@ def test_audit_query(
 
 
 def test_audit_query_not_enabled(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """audit_query returns error when audit logging is disabled."""
     mock_db._audit = None
@@ -326,7 +326,7 @@ def test_audit_query_not_enabled(
 
 
 def test_changes_since(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """changes_since returns CDC change events."""
     mock_db.get_changes.return_value = [
@@ -356,7 +356,7 @@ def test_changes_since(
 # ── Encryption ───────────────────────────────────────────────────────
 
 
-def test_encryption_check(server: ArgonDBMCPServer) -> None:
+def test_encryption_check(server: ArangoDBMCPServer) -> None:
     """encryption_check returns encryption status."""
     fake_status = EncryptionStatus(
         encrypted=True,
@@ -367,7 +367,7 @@ def test_encryption_check(server: ArgonDBMCPServer) -> None:
 
     with patch.object(
         __import__(
-            "open_argondb.encryption.validator", fromlist=["EncryptionValidator"]
+            "open_arangodb.encryption.validator", fromlist=["EncryptionValidator"]
         ).EncryptionValidator,
         "check",
         return_value=fake_status,
@@ -382,7 +382,7 @@ def test_encryption_check(server: ArgonDBMCPServer) -> None:
 # ── Error Handling ───────────────────────────────────────────────────
 
 
-def test_unknown_tool(server: ArgonDBMCPServer) -> None:
+def test_unknown_tool(server: ArangoDBMCPServer) -> None:
     """Calling an unknown tool returns an error dict."""
     result = server.call_tool("nonexistent_tool", {})
 
@@ -392,7 +392,7 @@ def test_unknown_tool(server: ArgonDBMCPServer) -> None:
 
 
 def test_tool_exception(
-    server: ArgonDBMCPServer, mock_db: MagicMock
+    server: ArangoDBMCPServer, mock_db: MagicMock
 ) -> None:
     """Exceptions in tool handlers are caught and returned as errors."""
     mock_db.get.side_effect = RuntimeError("database connection lost")

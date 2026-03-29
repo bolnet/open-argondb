@@ -7,8 +7,8 @@ from typing import Any
 
 import pytest
 
-from open_argondb.models import AgentScope, Memory, TemporalQuery
-from open_argondb.temporal.engine import TemporalEngine
+from open_arangodb.models import AgentScope, Memory, TemporalQuery
+from open_arangodb.temporal.engine import TemporalEngine
 
 
 # ── Helpers ──────────────────────────────────────────────────────────

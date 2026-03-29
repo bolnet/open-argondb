@@ -1,4 +1,4 @@
-"""Unit tests for ArgonDB core gateway."""
+"""Unit tests for ArangoDB core gateway."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-from open_argondb.models import AgentScope, Memory, Visibility
+from open_arangodb.models import AgentScope, Memory, Visibility
 from conftest import MockDatabase
 
 
@@ -63,15 +63,15 @@ def mock_db() -> MockDatabase:
 
 @pytest.fixture
 def argon_db(mock_db: MockDatabase):
-    """Create ArgonDB instance with mocked ArangoClient and SentenceTransformer."""
+    """Create ArangoDB instance with mocked ArangoClient and SentenceTransformer."""
     _install_fake_sentence_transformers()
-    with patch("open_argondb.core.ArangoClient") as mock_client_cls:
+    with patch("open_arangodb.core.ArangoClient") as mock_client_cls:
         mock_client = MagicMock()
         mock_client_cls.return_value = mock_client
         mock_client.db.return_value = mock_db
 
-        from open_argondb.core import ArgonDB
-        db = ArgonDB(
+        from open_arangodb.core import ArangoDB
+        db = ArangoDB(
             host="http://localhost:8529",
             database="test",
             audit_enabled=True,
@@ -84,13 +84,13 @@ def argon_db(mock_db: MockDatabase):
 @pytest.fixture
 def argon_db_no_audit(mock_db: MockDatabase):
     _install_fake_sentence_transformers()
-    with patch("open_argondb.core.ArangoClient") as mock_client_cls:
+    with patch("open_arangodb.core.ArangoClient") as mock_client_cls:
         mock_client = MagicMock()
         mock_client_cls.return_value = mock_client
         mock_client.db.return_value = mock_db
 
-        from open_argondb.core import ArgonDB
-        db = ArgonDB(
+        from open_arangodb.core import ArangoDB
+        db = ArangoDB(
             host="http://localhost:8529",
             database="test",
             audit_enabled=False,
@@ -102,13 +102,13 @@ def argon_db_no_audit(mock_db: MockDatabase):
 @pytest.fixture
 def argon_db_no_cdc(mock_db: MockDatabase):
     _install_fake_sentence_transformers()
-    with patch("open_argondb.core.ArangoClient") as mock_client_cls:
+    with patch("open_arangodb.core.ArangoClient") as mock_client_cls:
         mock_client = MagicMock()
         mock_client_cls.return_value = mock_client
         mock_client.db.return_value = mock_db
 
-        from open_argondb.core import ArgonDB
-        db = ArgonDB(
+        from open_arangodb.core import ArangoDB
+        db = ArangoDB(
             host="http://localhost:8529",
             database="test",
             audit_enabled=True,

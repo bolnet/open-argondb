@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from open_argondb.backup.manager import BackupManager
-from open_argondb.models import BackupConfig, RestoreConfig
+from open_arangodb.backup.manager import BackupManager
+from open_arangodb.models import BackupConfig, RestoreConfig
 
 
 @pytest.fixture()

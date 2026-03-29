@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-from open_argondb.models import Memory
+from open_arangodb.models import Memory
 from conftest import MockDatabase
 
 
@@ -58,7 +58,7 @@ def vector_search(mock_db: MockDatabase):
     fake_st.SentenceTransformer = MagicMock(side_effect=lambda *a, **kw: _fake_model())
     sys.modules["sentence_transformers"] = fake_st
 
-    from open_argondb.vector.search import VectorSearch
+    from open_arangodb.vector.search import VectorSearch
     # Force re-creation of embedding fn by clearing any cached state
     vs = VectorSearch(mock_db, model_name="test-model")
     return vs
@@ -66,7 +66,7 @@ def vector_search(mock_db: MockDatabase):
 
 def _seed_memory(mock_db: MockDatabase, mid: str, content: str) -> None:
     """Insert a bare memory doc into the mock DB for vector search to update."""
-    from open_argondb.store.document_store import DocumentStore
+    from open_arangodb.store.document_store import DocumentStore
     store = DocumentStore(mock_db)
     store.insert(Memory(id=mid, content=content))
 

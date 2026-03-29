@@ -302,34 +302,34 @@ def mock_db() -> MockDatabase:
 @pytest.fixture
 def document_store(mock_db: MockDatabase):
     """DocumentStore wired to mock DB."""
-    from open_argondb.store.document_store import DocumentStore
+    from open_arangodb.store.document_store import DocumentStore
     return DocumentStore(mock_db)
 
 
 @pytest.fixture
 def cdc_engine(mock_db: MockDatabase):
     """CDCEngine wired to mock DB."""
-    from open_argondb.cdc.engine import CDCEngine
-    from open_argondb.events.bus import InProcessBus
+    from open_arangodb.cdc.engine import CDCEngine
+    from open_arangodb.events.bus import InProcessBus
     return CDCEngine(mock_db, InProcessBus())
 
 
 @pytest.fixture
 def audit_logger(mock_db: MockDatabase):
     """AuditLogger wired to mock DB."""
-    from open_argondb.audit.logger import AuditLogger
+    from open_arangodb.audit.logger import AuditLogger
     return AuditLogger(mock_db)
 
 
 @pytest.fixture
 def event_bus():
     """Fresh InProcessBus."""
-    from open_argondb.events.bus import InProcessBus
+    from open_arangodb.events.bus import InProcessBus
     return InProcessBus()
 
 
 @pytest.fixture
 def scope_manager(mock_db: MockDatabase):
     """ScopeManager wired to mock DB."""
-    from open_argondb.scoping.manager import ScopeManager
+    from open_arangodb.scoping.manager import ScopeManager
     return ScopeManager(mock_db)
