@@ -10,7 +10,20 @@ from arango import ArangoClient
 from open_argondb.audit.logger import AuditLogger
 from open_argondb.cdc.engine import CDCEngine
 from open_argondb.events.bus import EventBus, InProcessBus
-from open_argondb.models import AgentScope, AuditEntry, ChangeEvent, Memory
+from open_argondb.models import (
+    AgentScope,
+    AuthResult,
+    BackupConfig,
+    BackupResult,
+    ChangeEvent,
+    EncryptionStatus,
+    GraphConfig,
+    Memory,
+    RetrievalRequest,
+    RetrievalResult,
+    SupersessionChain,
+    TraversalResult,
+)
 from open_argondb.scoping.manager import ScopeManager
 from open_argondb.store.document_store import DocumentStore
 from open_argondb.vector.search import VectorSearch
@@ -23,12 +36,6 @@ class ArgonDB:
 
     All writes go through this gateway to ensure audit, CDC, and event
     propagation are applied consistently.
-
-    Usage:
-        db = ArgonDB(host="http://localhost:8529", database="mydb")
-        db.insert(memory, scope=AgentScope(agent_id="agent-1"))
-        results = db.search("what happened yesterday?", limit=10)
-        db.close()
     """
 
     def __init__(
@@ -41,6 +48,15 @@ class ArgonDB:
         audit_enabled: bool = True,
         cdc_enabled: bool = True,
         embedding_model: str = "BAAI/bge-m3",
+        # Optional modules
+        graph_enabled: bool = False,
+        retrieval_enabled: bool = False,
+        temporal_enabled: bool = False,
+        backup_enabled: bool = False,
+        encryption_check: bool = False,
+        satellite_configs: list[Any] | None = None,
+        replication_config: Any = None,
+        ldap_config: Any = None,
     ) -> None:
         self._client = ArangoClient(hosts=host)
         self._sys_db = self._client.db("_system", username=username, password=password)
@@ -58,6 +74,69 @@ class ArgonDB:
         self._events = event_bus or InProcessBus()
         self._audit = AuditLogger(self._db) if audit_enabled else None
         self._cdc = CDCEngine(self._db, self._events) if cdc_enabled else None
+
+        # Optional modules — lazy imports to avoid hard dep on optional packages
+        self._temporal = self._init_temporal() if temporal_enabled else None
+        self._graph = self._init_graph() if graph_enabled else None
+        self._parallel = self._init_parallel() if self._graph else None
+        self._retrieval = self._init_retrieval() if retrieval_enabled else None
+        self._backup = self._init_backup(host, username, password) if backup_enabled else None
+        self._encryption = self._init_encryption() if encryption_check else None
+
+        # Satellite caches
+        self._satellites: dict[str, Any] = {}
+        if satellite_configs:
+            from open_argondb.satellite.cache import SatelliteCache
+
+            for sc in satellite_configs:
+                self._satellites[sc.collection] = SatelliteCache(self._db, sc)
+
+        # Replication (requires target_db to be provided separately)
+        self._replication: Any = None
+
+        # LDAP auth
+        self._ldap: Any = None
+        if ldap_config:
+            from open_argondb.auth.ldap_auth import LDAPAuthenticator
+
+            self._ldap = LDAPAuthenticator(ldap_config)
+
+    # ── Lazy module initializers ──
+
+    def _init_temporal(self) -> Any:
+        from open_argondb.temporal.engine import TemporalEngine
+
+        return TemporalEngine(self._db)
+
+    def _init_graph(self) -> Any:
+        from open_argondb.graph.manager import GraphManager
+
+        return GraphManager(self._db)
+
+    def _init_parallel(self) -> Any:
+        from open_argondb.graph.parallel import ParallelTraverser
+
+        return ParallelTraverser(self._graph)
+
+    def _init_retrieval(self) -> Any:
+        from open_argondb.retrieval.orchestrator import RetrievalOrchestrator
+
+        return RetrievalOrchestrator(
+            db=self._db,
+            vector_search=self._vector,
+            temporal_engine=self._temporal,
+            scope_manager=self._scope,
+        )
+
+    def _init_backup(self, host: str, username: str, password: str) -> Any:
+        from open_argondb.backup.manager import BackupManager
+
+        return BackupManager(host=host, username=username, password=password)
+
+    def _init_encryption(self) -> Any:
+        from open_argondb.encryption.validator import EncryptionValidator
+
+        return EncryptionValidator()
 
     @property
     def db(self):
@@ -166,6 +245,90 @@ class ArgonDB:
             raise RuntimeError("CDC is not enabled")
         return self._cdc.get_changes(since_rev)
 
+    # ── Retrieval ──
+
+    def retrieve(self, request: RetrievalRequest) -> list[RetrievalResult]:
+        """Multi-layer retrieval with RRF fusion."""
+        if not self._retrieval:
+            raise RuntimeError("Retrieval is not enabled")
+        return self._retrieval.retrieve(request)
+
+    # ── Temporal ──
+
+    def get_supersession_chain(self, memory_id: str) -> SupersessionChain:
+        """Walk the supersession chain from a memory."""
+        if not self._temporal:
+            raise RuntimeError("Temporal is not enabled")
+        return self._temporal.get_supersession_chain(memory_id)
+
+    def get_current_version(self, memory_id: str) -> Memory | None:
+        """Follow supersession chain to its tip and return that Memory."""
+        if not self._temporal:
+            raise RuntimeError("Temporal is not enabled")
+        return self._temporal.get_current_version(memory_id)
+
+    def detect_contradictions(
+        self, entity: str, scope: AgentScope | None = None,
+    ) -> list[Any]:
+        """Find active memories for entity whose content differs."""
+        if not self._temporal:
+            raise RuntimeError("Temporal is not enabled")
+        return self._temporal.detect_contradictions(entity, scope)
+
+    # ── Graph ──
+
+    def create_graph(self, config: GraphConfig) -> None:
+        """Create a named graph with optional smart partitioning."""
+        if not self._graph:
+            raise RuntimeError("Graph is not enabled")
+        return self._graph.create_graph(config)
+
+    def traverse(self, start_vertex: str, **kwargs: Any) -> TraversalResult:
+        """Graph traversal from a start vertex."""
+        if not self._graph:
+            raise RuntimeError("Graph is not enabled")
+        return self._graph.traverse(start_vertex, **kwargs)
+
+    def traverse_parallel(
+        self, start_vertices: list[str], **kwargs: Any,
+    ) -> list[TraversalResult]:
+        """Parallel graph traversal from multiple start vertices."""
+        if not self._parallel:
+            raise RuntimeError("Graph is not enabled")
+        return self._parallel.traverse_parallel(start_vertices, **kwargs)
+
+    # ── Backup ──
+
+    def create_backup(self, config: BackupConfig) -> BackupResult:
+        """Create a backup using arangodump."""
+        if not self._backup:
+            raise RuntimeError("Backup is not enabled")
+        return self._backup.dump(config)
+
+    # ── Encryption ──
+
+    def check_encryption(self, data_directory: str | None = None) -> EncryptionStatus:
+        """Check OS-level encryption at rest."""
+        if not self._encryption:
+            raise RuntimeError("Encryption check is not enabled")
+        return self._encryption.check(data_directory)
+
+    # ── Satellite ──
+
+    def get_satellite(self, collection: str) -> Any:
+        """Get the satellite cache for a collection."""
+        if collection not in self._satellites:
+            raise RuntimeError(f"No satellite cache for {collection}")
+        return self._satellites[collection]
+
+    # ── Auth ──
+
+    def authenticate(self, username: str, password: str) -> AuthResult:
+        """Authenticate user against LDAP."""
+        if not self._ldap:
+            raise RuntimeError("LDAP auth is not enabled")
+        return self._ldap.authenticate(username, password)
+
     # ── Lifecycle ──
 
     def reset(self) -> None:
@@ -176,9 +339,15 @@ class ArgonDB:
             self._cdc.reset()
         if self._audit:
             self._audit.reset()
+        if self._graph:
+            self._graph.reset()
 
     def close(self) -> None:
         """Clean shutdown."""
         if self._cdc:
             self._cdc.stop()
         self._events.close()
+        for sat in self._satellites.values():
+            sat.stop()
+        if self._replication:
+            self._replication.stop()

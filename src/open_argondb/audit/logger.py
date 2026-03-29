@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
@@ -81,7 +80,10 @@ class AuditLogger:
             bind_vars["since"] = since
 
         where = f"FILTER {' AND '.join(filters)}" if filters else ""
-        query = f"FOR doc IN {self.COLLECTION} {where} SORT doc.timestamp DESC LIMIT @lim RETURN doc"
+        query = (
+            f"FOR doc IN {self.COLLECTION} {where} "
+            "SORT doc.timestamp DESC LIMIT @lim RETURN doc"
+        )
         return list(self._db.aql.execute(query, bind_vars=bind_vars))
 
     def reset(self) -> None:

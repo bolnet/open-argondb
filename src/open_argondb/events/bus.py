@@ -5,7 +5,8 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 logger = logging.getLogger("open_argondb")
 
