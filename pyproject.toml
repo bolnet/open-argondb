@@ -30,11 +30,13 @@ embeddings = ["sentence-transformers>=2.2"]
 events-redis = ["redis>=5.0"]
 events-nats = ["nats-py>=2.0"]
 mcp = ["mcp>=1.0"]
+auth = ["ldap3>=2.9"]
 all = [
     "sentence-transformers>=2.2",
     "redis>=5.0",
     "nats-py>=2.0",
     "mcp>=1.0",
+    "ldap3>=2.9",
 ]
 dev = [
     "pytest>=8.0",
